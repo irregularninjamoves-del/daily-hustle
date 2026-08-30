@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Search, Copy, MapPin, ExternalLink } from 'lucide-react'
+import { Search, Copy, ExternalLink } from 'lucide-react'
 import { couponsAPI } from '../services/api'
 
 interface Coupon {
