@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+  
+  html {
+    @apply h-full;
+  }
+  
+  body {
+    @apply h-full bg-gray-50 text-gray-900 antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  #root {
+    @apply h-full;
+  }
+}
+
+@layer components {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+}
