@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: daily-hustle-db
+    environment:
+      POSTGRES_USER: dailyhustle
+      POSTGRES_PASSWORD: dailyhustle
+      POSTGRES_DB: dailyhustle
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dailyhustle"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: daily-hustle-api
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://dailyhustle:dailyhustle@db:5432/dailyhustle
+      - SECRET_KEY=your-super-secret-key-change-in-production
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Optional: Redis for caching/sessions
+  redis:
+    image: redis:7-alpine
+    container_name: daily-hustle-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:
