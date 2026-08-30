@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import get_settings
-from .database import init_db
+from .database import init_db, AsyncSessionLocal
 from .api.routes import (
     auth_router,
     coupons_router,
@@ -29,6 +29,18 @@ async def lifespan(app: FastAPI):
     """Application lifespan context manager."""
     # Startup
     await init_db()
+    
+    # Seed initial data
+    try:
+        async with AsyncSessionLocal() as db:
+            from ..seed_data import seed_hustles, seed_delivery_services, seed_coupons
+            await seed_hustles(db)
+            await seed_delivery_services(db)
+            await seed_coupons(db)
+            print("✅ Database seeded successfully")
+    except Exception as e:
+        print(f"⚠️ Seeding skipped: {e}")
+    
     yield
     # Shutdown
     pass
@@ -42,7 +54,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS middleware - allow all origins in development
+# CORS middleware - allow all origins
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
