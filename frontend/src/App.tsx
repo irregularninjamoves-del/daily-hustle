@@ -7,7 +7,6 @@ import Hustles from './pages/Hustles'
 import Delivery from './pages/Delivery'
 import Saved from './pages/Saved'
 import Profile from './pages/Profile'
-import Login from './pages/Login'
 import Recommendations from './pages/Recommendations'
 import { useAuthStore } from './stores/authStore'
 
@@ -21,7 +20,6 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="coupons" element={<Coupons />} />
