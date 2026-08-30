@@ -1,12 +1,21 @@
 import { useEffect, useState } from 'react'
-import { MapPin, TrendingUp, DollarSign, Zap } from 'lucide-react'
+import { MapPin, TrendingUp, DollarSign, Zap, Bike } from 'lucide-react'
 import { couponsAPI, hustlesAPI, deliveryAPI } from '../services/api'
 
 export default function Dashboard() {
   const [stats, setStats] = useState({ coupons: 0, hustles: 0, delivery: 0 })
   const [loading, setLoading] = useState(true)
+  const [location, setLocation] = useState<{lat: number, lon: number} | null>(null)
   
   useEffect(() => {
+    // Get user location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => setLocation({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+        () => console.log('Location denied')
+      )
+    }
+    
     const fetchData = async () => {
       try {
         const [couponsRes, hustlesRes, deliveryRes] = await Promise.all([
@@ -21,7 +30,7 @@ export default function Dashboard() {
           delivery: deliveryRes.data.items?.length || 0
         })
       } catch (error) {
-        console.error('Error fetching dashboard data:', error)
+        console.error('Error:', error)
       } finally {
         setLoading(false)
       }
@@ -35,8 +44,8 @@ export default function Dashboard() {
       <div className="p-4 space-y-4">
         <div className="h-8 bg-gray-200 rounded animate-pulse"></div>
         <div className="grid grid-cols-2 gap-4">
-          <div className="h-24 bg-gray-200 rounded animate-pulse"></div>
-          <div className="h-24 bg-gray-200 rounded animate-pulse"></div>
+          <div className="h-24 bg-gray-200 rounded-xl animate-pulse"></div>
+          <div className="h-24 bg-gray-200 rounded-xl animate-pulse"></div>
         </div>
       </div>
     )
@@ -44,13 +53,12 @@ export default function Dashboard() {
 
   return (
     <div className="p-4 space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Daily Hustle</h1>
           <p className="text-gray-500 text-sm flex items-center gap-1">
             <MapPin className="h-4 w-4" />
-            <span>Your personalized deals</span>
+            <span>{location ? 'Using your location' : 'Location not available'}</span>
           </p>
         </div>
         <div className="h-10 w-10 bg-primary-100 rounded-full flex items-center justify-center">
@@ -58,7 +66,6 @@ export default function Dashboard() {
         </div>
       </div>
       
-      {/* Stats */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
           <div className="flex items-center gap-2 text-primary-600 mb-2">
@@ -79,14 +86,10 @@ export default function Dashboard() {
         </div>
       </div>
       
-      {/* Quick actions */}
       <div className="space-y-3">
         <h2 className="font-semibold text-gray-900">Quick Actions</h2>
         
-        <a
-          href="/coupons"
-          className="block bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:border-primary-300 transition-colors"
-        >
+        <a href="/coupons" className="block bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:border-primary-300 transition-colors">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 bg-orange-100 rounded-lg flex items-center justify-center">
@@ -101,14 +104,11 @@ export default function Dashboard() {
           </div>
         </a>
         
-        <a
-          href="/delivery"
-          className="block bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:border-primary-300 transition-colors"
-        >
+        <a href="/delivery" className="block bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:border-primary-300 transition-colors">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <DollarSign className="h-5 w-5 text-green-600" />
+                <Bike className="h-5 w-5 text-green-600" />
               </div>
               <div>
                 <p className="font-medium text-gray-900">Start Earning</p>

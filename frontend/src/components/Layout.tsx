@@ -1,5 +1,6 @@
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation, Navigate } from 'react-router-dom'
 import { Home, Ticket, Briefcase, Bike, User, Sparkles } from 'lucide-react'
+import { useAuthStore } from '../stores/authStore'
 
 const navItems = [
   { path: '/', icon: Home, label: 'Home' },
@@ -12,6 +13,19 @@ const navItems = [
 
 export default function Layout() {
   const location = useLocation()
+  const { isAuthenticated, isLoading } = useAuthStore()
+  
+  if (isLoading) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      </div>
+    )
+  }
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />
+  }
 
   return (
     <div className="h-full flex flex-col">

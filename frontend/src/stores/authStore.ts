@@ -21,30 +21,15 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      token: 'demo-token',
-      user: { id: 'demo', email: 'you@dailyhustle.app', name: 'You' },
-      isAuthenticated: true,
-      isLoading: false,
-      
+      token: null,
+      user: null,
+      isAuthenticated: false,
+      isLoading: true,
       setToken: (token) => set({ token, isAuthenticated: true }),
-      
       setUser: (user) => set({ user }),
-      
-      logout: () => set({ 
-        token: 'demo-token', 
-        user: { id: 'demo', email: 'you@dailyhustle.app', name: 'You' }, 
-        isAuthenticated: true 
-      }),
-      
-      initialize: () => set({ 
-        token: 'demo-token', 
-        user: { id: 'demo', email: 'you@dailyhustle.app', name: 'You' }, 
-        isAuthenticated: true,
-        isLoading: false 
-      })
+      logout: () => set({ token: null, user: null, isAuthenticated: false }),
+      initialize: () => set({ isLoading: false })
     }),
-    {
-      name: 'auth-storage',
-    }
+    { name: 'auth-storage' }
   )
 )

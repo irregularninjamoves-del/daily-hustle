@@ -8,6 +8,7 @@ import Delivery from './pages/Delivery'
 import Saved from './pages/Saved'
 import Profile from './pages/Profile'
 import Recommendations from './pages/Recommendations'
+import Login from './pages/Login'
 import { useAuthStore } from './stores/authStore'
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/login" element={<Login />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="coupons" element={<Coupons />} />
